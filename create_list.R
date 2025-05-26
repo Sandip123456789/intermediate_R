@@ -21,3 +21,4 @@ scores <- c(4.5, 4.0, 5.0)
 movie_title <- "The Shining"
 actors <- c( "Jack Nicholson", "Shelley Duvall", "Danny Lloyd", "Scatman Crothers", "Barry Nelson" )
 reviews_df <- data.frame(scores, sources, comments)
+
