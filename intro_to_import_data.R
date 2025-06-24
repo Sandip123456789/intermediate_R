@@ -115,3 +115,37 @@ potatoes_char <- read_tsv("potatoes.txt", col_types = "cccccccc", col_names = pr
 
 # Print out structure of potatoes_char
 str(potatoes_char)
+
+#*****************************************************************************
+
+'col_types with collectors'
+
+# Import without col_types
+hotdogs <- read_tsv("hotdogs.txt", col_names = c("type", "calories", "sodium"))
+
+# Display the summary of hotdogs
+summary(hotdogs)
+
+# The collectors you will need to import the data
+fac <- col_factor(levels = c("Beef", "Meat", "Poultry"))
+int <- col_integer()
+
+# Edit the col_types argument to import the data correctly: hotdogs_factor
+hotdogs_factor <- read_tsv("hotdogs.txt",
+                           col_names = c("type", "calories", "sodium"),
+                           col_types = list(fac, int, int))
+
+# Display the summary of hotdogs_factor
+summary(hotdogs_factor)
+
+#*******************************************************************************
+
+'fread() with with arguments: drop and select'
+
+# Import columns 6 and 8 of potatoes.csv: potatoes
+#potatoes <- fread("potatoes.csv", select = c(6, 8))
+potatoes1 <- fread("potatoes.csv", drop = c(1:5, 7))
+
+# Plot texture (x) and moistness (y) of potatoes
+#plot(potatoes$texture, potatoes$moistness, xlab = "Textures", ylab = "Moistnesses")
+plot(potatoes1$texture, potatoes1$moistness, xlab = "Textures", ylab = "Moistnesses")
