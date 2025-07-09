@@ -84,3 +84,71 @@ assert_all_are_not_na(accounts_clean$cust_id)
 
 # Assert that acct_amount_filled has no missing vals
 assert_all_are_not_na(accounts_clean$acct_amount_filled)
+
+#*****************************************************************************
+
+'Comparing Strings'
+
+'Calculating strings distance using different methods'
+
+# Calculate Damerau-Levenshtein distance
+stringdist("las angelos", "los angeles", method = "dl")
+
+# Calculate LCS distance
+stringdist("las angelos", "los angeles", method = "lcs")
+
+# Calculate Jaccard distance
+stringdist("las angelos", "los angeles", method = "jaccard")
+
+#******************************************************************************
+
+'Fixing typos with string distance'
+
+# Count the number of each city variation
+zagat %>%
+  count(city)
+
+# Join zagat and cities and look at results
+zagat %>%
+  # Left join based on stringdist using city and city_actual cols
+  stringdist_left_join(cities, by = c("city" = "city_actual")) %>%
+  # Select the name, city, and city_actual cols
+  select(name, city, city_actual)
+
+#****************************************************************************
+
+'Pair Blocking'
+
+#1. Load reclin
+#1. Generate all possible pairs of records between the zagat and fodors datasets.
+
+# Load reclin
+library(reclin)
+
+# Generate all possible pairs
+pair_blocking(zagat, fodors)
+
+#2. Use pair blocking to generate only pairs that have matching values in the city column.
+
+# Generate pairs with same city
+pair_blocking(zagat, fodors, blocking_var = "city")
+
+#******************************************************************************
+
+'Comparing Pairs'
+
+'1. Compare pairs by name using lcs() distance'
+
+# Generate pairs
+pair_blocking(zagat, fodors, blocking_var = "city") %>%
+  # Compare pairs by name using lcs()
+  compare_pairs(by = "name",
+                default_comparator = lcs())
+
+'Compare pairs by name, phone, and addr using jaro_winkler().'
+
+# Generate pairs
+pair_blocking(zagat, fodors, blocking_var = "city") %>%
+  # Compare pairs by name, phone, addr
+  compare_pairs(by = c("name", "phone", "addr"),
+                default_comparator = jaro_winkler())
